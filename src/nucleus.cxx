@@ -60,6 +60,10 @@ NucleusPtr Nucleus::create(const std::string& species, double nucleon_dmin) {
     return NucleusPtr{new WoodsSaxonNucleus{
       208, 6.62, 0.546, nucleon_dmin
     }};
+  else if (species == "Pb2")
+    return NucleusPtr{new NonMonotonicWoodsSaxonNucleus{
+      208, 6.62, 0.546, 0.1, nucleon_dmin
+    }};
   else if (species == "U")
     return NucleusPtr{new DeformedWoodsSaxonNucleus{
       238, 6.81, 0.600, 0.280, 0.093, nucleon_dmin
@@ -378,6 +382,98 @@ void DeformedWoodsSaxonNucleus::sample_nucleons_impl() {
     } while (++ntries < 1000 && is_too_close(nucleon));
   }
 }
+
+
+//==============================================================================
+//==============================================================================
+//==============================================================================
+//==============================================================================
+//==============================================================================
+//==============================================================================
+//==============================================================================
+
+// Extend the W-S dist out to R + 10a; for typical values of (R, a), the
+// probability of sampling a nucleon beyond this radius is O(10^-5).
+NonMonotonicWoodsSaxonNucleus::NonMonotonicWoodsSaxonNucleus(
+    std::size_t A, double R, double a, double w, double dmin)
+    : MinDistNucleus(A, dmin),
+      R_(R),
+      a_(a),
+      w_(w),
+      Reff_(R*std::sqrt((5.0 + 25.0*w/7.0)/(5.0 + 3.0*w))),
+      nonmonotonic_woods_saxon_dist_(1000, 0.,
+        R*std::sqrt((5.0 + 25.0*w/7.0)/(5.0 + 3.0*w)) + 10.*a,
+        [R, a, w](double r) { return r*r*(1 + w*(r/R)*(r/R))/(1.+std::exp((r-R)/a)); })
+{}
+
+/// Return something a bit smaller than the true maximum radius.  The
+/// Woods-Saxon distribution falls off very rapidly (exponentially), and since
+/// this radius determines the impact parameter range, the true maximum radius
+/// would cause far too many events with zero participants.
+double NonMonotonicWoodsSaxonNucleus::radius() const {
+  return Reff_ + 3.*a_;
+}
+
+/// Sample Woods-Saxon nucleon positions.
+void NonMonotonicWoodsSaxonNucleus::sample_nucleons_impl() {
+  // When placing nucleons with a minimum distance criterion, resample spherical
+  // angles until the nucleon is not too close to a previously sampled nucleon,
+  // but do not resample radius -- this could modify the Woods-Saxon dist.
+
+  // Because of the r^2 Jacobian, there is less available space at smaller
+  // radii.  Therefore, pre-sample all radii first, sort them, and then place
+  // nucleons starting with the smallest radius and working outwards.  This
+  // dramatically reduces the chance that a nucleon cannot be placed.
+  std::vector<double> radii(size());
+  for (auto&& r : radii)
+    r = nonmonotonic_woods_saxon_dist_(random::engine);
+  std::sort(radii.begin(), radii.end());
+
+  // Place each nucleon at a pre-sampled radius.
+  auto r_iter = radii.cbegin();
+  for (iterator nucleon = begin(); nucleon != end(); ++nucleon) {
+    // Get radius and advance iterator.
+    auto& r = *r_iter++;
+
+    // Sample angles until the minimum distance criterion is satisfied.
+    auto ntries = 0;
+    do {
+      // Sample isotropic spherical angles.
+      auto cos_theta = random::cos_theta<double>();
+      auto phi = random::phi<double>();
+
+      // Convert to Cartesian coordinates.
+      auto r_sin_theta = r * std::sqrt(1. - cos_theta*cos_theta);
+      auto x = r_sin_theta * std::cos(phi);
+      auto y = r_sin_theta * std::sin(phi);
+      auto z = r * cos_theta;
+
+      set_nucleon_position(*nucleon, x, y, z);
+
+      // Retry sampling a reasonable number of times.  If a nucleon cannot be
+      // placed, give up and leave it at its last sampled position.  Some
+      // approximate numbers for Pb nuclei:
+      //
+      //   dmin = 0.5 fm, < 0.001% of nucleons cannot be placed
+      //          1.0 fm, ~0.005%
+      //          1.5 fm, ~0.1%
+      //          1.73 fm, ~1%
+    } while (++ntries < 1000 && is_too_close(nucleon));
+  }
+  // XXX: re-center nucleon positions?
+}
+
+
+//==============================================================================
+//==============================================================================
+//==============================================================================
+//==============================================================================
+//==============================================================================
+//==============================================================================
+//==============================================================================
+
+
+
 
 #ifdef TRENTO_HDF5
 

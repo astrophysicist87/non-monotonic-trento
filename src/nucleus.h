@@ -270,6 +270,48 @@ class DeformedWoodsSaxonNucleus : public MinDistNucleus {
   const double rmax_;
 };
 
+//==============================================================================
+//==============================================================================
+//==============================================================================
+/// \rst
+/// Samples nucleons from a spherically symmetric Woods-Saxon distribution
+///
+/// .. math::
+///
+///   f(r) \propto \frac{1 + w\left(\frac{r}{R}\right)^2}{1 + \exp(\frac{r-R}{a})}.
+///
+/// For non-deformed heavy nuclei such as lead.
+///
+/// \endrst
+class NonMonotonicWoodsSaxonNucleus : public MinDistNucleus {
+ public:
+  /// ``Nucleus::create()`` sets these parameters for a given species.
+  /// \param A number of nucleons
+  /// \param R Woods-Saxon radius
+  /// \param a Woods-Saxon surface thickness
+  /// \param w Woods-Saxon non-monotonicity parameter
+  /// \param dmin minimum nucleon-nucleon distance (optional, default zero)
+  NonMonotonicWoodsSaxonNucleus(std::size_t A, double R, double a, double w, double dmin = 0);
+
+  /// The radius of a Woods-Saxon Nucleus is computed from the parameters (R, a, w).
+  virtual double radius() const override;
+
+ private:
+  /// Sample Woods-Saxon nucleon positions.
+  virtual void sample_nucleons_impl() override;
+
+  /// Woods-Saxon parameters.
+  const double R_, a_, w_, Reff_;
+
+  /// Woods-Saxon distribution object.  Since the dist does not have an analytic
+  /// inverse CDF, approximate it as a piecewise linear dist.  For a large
+  /// number of steps this is very accurate.
+  mutable std::piecewise_linear_distribution<double> nonmonotonic_woods_saxon_dist_;
+};
+//==============================================================================
+//==============================================================================
+//==============================================================================
+
 #ifdef TRENTO_HDF5
 
 /// Reads manual nuclear configurations from an HDF5 file.
