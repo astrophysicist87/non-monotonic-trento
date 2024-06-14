@@ -12,12 +12,12 @@ def load_files(files):
     # sort by Npart
     data = data[data[:,0].argsort()]
     
-    # find  corresponding to different percentiles
+    # find Npart values corresponding to different percentiles
     inds = np.digitize(data[:,0], np.percentile(data[:,0], percentiles)[::-1])
+    print('Npart bin limits:', inds)
     
-    # the Npart valuesindices at which the bins are split
+    # the indices at which the bins are split
     binlimits = np.where(np.diff(inds))[0]+1
-    print('Bin limits:', binlimits)
     
     # split the data array accordingly
     bins = np.split(data, binlimits)
