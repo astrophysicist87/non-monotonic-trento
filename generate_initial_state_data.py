@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 
-bw          = sys.argv[1] # in %
+bw          = int(sys.argv[1]) # in %
 percentiles = np.linspace(0,100,1+100//bw)[1:-1]
 
 #====================================================================================
