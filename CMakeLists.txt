@@ -117,7 +117,7 @@ if(NATIVE)
   endif()
 endif()
 
-string(APPEND CMAKE_CXX_FLAGS " -Wall -Wextra")
+string(APPEND CMAKE_CXX_FLAGS " -Wall -Wextra --std=c++11")
 
 option(MORE_WARNINGS "enable more compiler warnings" ON)
 if(MORE_WARNINGS AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
