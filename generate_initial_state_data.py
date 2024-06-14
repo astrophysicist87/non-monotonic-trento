@@ -1,8 +1,11 @@
 import numpy as np
 import sys
 
+plotVsNpart = False
 bw          = int(sys.argv[1]) # in %
 percentiles = np.linspace(0,100,1+100//bw)[1:-1]
+
+x_axis_column_index = plotVsNpart ? 0 : 1;
 
 #====================================================================================
 def load_files(files):
@@ -48,27 +51,27 @@ def e_2_8(e2):
 #====================================================================================
 def get_uptick(bins):
     # evaluate and return the required observable in each bin as an array
-    return np.array([[np.mean(bin[:,0]), 2.0*np.mean(bin[:,1])/np.mean(bin[:,0])] for bin in bins])
+    return np.array([[np.mean(bin[:,x_axis_column_index]), 2.0*np.mean(bin[:,1])/np.mean(bin[:,0])] for bin in bins])
 
 #====================================================================================
 def get_e_2_2(bins):    
     # evaluate and return the required observable in each bin as an array
-    return np.array([[np.mean(bin[:,0]), e_2_2(bin[:,1])] for bin in bins])
+    return np.array([[np.mean(bin[:,x_axis_column_index]), e_2_2(bin[:,1])] for bin in bins])
 
 #====================================================================================
 def get_e_2_4(bins):    
     # evaluate and return the required observable in each bin as an array
-    return np.array([[np.mean(bin[:,0]), e_2_4(bin[:,1])] for bin in bins])
+    return np.array([[np.mean(bin[:,x_axis_column_index]), e_2_4(bin[:,1])] for bin in bins])
 
 #====================================================================================
 def get_e_2_6(bins):    
     # evaluate and return the required observable in each bin as an array
-    return np.array([[np.mean(bin[:,0]), e_2_6(bin[:,1])] for bin in bins])
+    return np.array([[np.mean(bin[:,x_axis_column_index]), e_2_6(bin[:,1])] for bin in bins])
 
 #====================================================================================
 def get_e_2_8(bins):    
     # evaluate and return the required observable in each bin as an array
-    return np.array([[np.mean(bin[:,0]), e_2_8(bin[:,1])] for bin in bins])
+    return np.array([[np.mean(bin[:,x_axis_column_index]), e_2_8(bin[:,1])] for bin in bins])
 
 
 #====================================================================================
