@@ -39,5 +39,5 @@ def get_eps2rms(files):
 #====================================================================================
 if __name__ == "__main__":
     files = sys.argv[1:]
-    #print(get_uptick(files))
-    print(get_eps2rms(files))
+    print(get_uptick(files))
+    #print(get_eps2rms(files))
