@@ -64,6 +64,10 @@ NucleusPtr Nucleus::create(const std::string& species, double nucleon_dmin) {
     return NucleusPtr{new NonMonotonicWoodsSaxonNucleus{
       208, 6.62, 0.546, 0.1, nucleon_dmin
     }};
+  else if (species == "Pb3")
+    return NucleusPtr{new NonMonotonicWoodsSaxonNucleus{
+      208, 6.62, 0.546, 0.5, nucleon_dmin
+    }};
   else if (species == "U")
     return NucleusPtr{new DeformedWoodsSaxonNucleus{
       238, 6.81, 0.600, 0.280, 0.093, nucleon_dmin
