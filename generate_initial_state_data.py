@@ -49,6 +49,7 @@ def get_eps2rms(files):
 
 #====================================================================================
 if __name__ == "__main__":
-    files = sys.argv[2:]
-    print(get_uptick(files))
-    #print(get_eps2rms(files))
+    collisionSpecies = sys.argv[2]
+    files = sys.argv[3:]
+    np.savetxt(collisionSpecies + "_uptick.dat", get_uptick(files))
+    np.savetxt(collisionSpecies + "_eps2rms.dat", get_eps2rms(files))
