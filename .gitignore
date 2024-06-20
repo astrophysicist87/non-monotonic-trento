@@ -1,2 +1,4 @@
 build/
 *.dat
+*.hdf
+*.png
