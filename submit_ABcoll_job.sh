@@ -11,7 +11,7 @@ sbatch <<EOT
 #SBATCH --nodes=1
 #SBATCH --output="${nucleusA}${nucleusB}_job_%j.out"
 
-./build/src/trento ${nucleusA} ${nucleusB} ${nEvents}
+time ./build/src/trento ${nucleusA} ${nucleusB} ${nEvents}
 
 exit 0
 EOT
