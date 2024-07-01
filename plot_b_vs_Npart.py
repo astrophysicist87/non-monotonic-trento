@@ -64,6 +64,7 @@ if __name__ == "__main__":
     
     # load and process files, one at a time
     for i, file in enumerate(sys.argv[1:-2]): # all but last two command-line args
+        print("Processing file:", file)
         bins = load_file(file)
         plot_curves(fig, ax, bins, plotstyles[i])
         
