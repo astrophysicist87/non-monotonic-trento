@@ -5,6 +5,10 @@ import sys
 x_axis_column_index = int(sys.argv[2])
 y_axis_column_index = int(sys.argv[3])
 
+bw          = 1 # in %
+percentiles = np.linspace(0,100,1+100//bw)[1:-1]
+
+
 #====================================================================================
 def load_file(file):
     # columns for Npart and integrated S, respectively
