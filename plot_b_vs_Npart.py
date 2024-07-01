@@ -6,7 +6,10 @@ data = np.loadtxt(sys.argv[1], usecols=(0,1))
 
 fig, ax = plt.subplots(nrows=1, ncols=1)
 
-ax.hist2d(data[:,0], data[:,1], bins=100)
+bxw, byw = 0.1, 1.0
+nbx = int(np.amax(data[:,0])/bxw)
+nby = int(np.amax(data[:,1])/byw)
+ax.hist2d(data[:,0], data[:,1], bins=[nbx,nby])
 
 fig.tight_layout()
 
