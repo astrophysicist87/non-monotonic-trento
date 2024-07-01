@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
-columns_to_plot = sys.argv[2:]
-data = np.loadtxt(sys.argv[1], usecols=columns_to_plot)
+data = np.loadtxt(sys.argv[1], usecols=(int(sys.argv[2]), int(sys.argv[3])))
 
 fig, ax = plt.subplots(nrows=1, ncols=1)
 
