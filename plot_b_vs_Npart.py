@@ -64,6 +64,6 @@ def plot_curves(bins):
 
 #====================================================================================
 if __name__ == "__main__":
-    bins = load_files(sys.argv[1])
+    bins = load_file(sys.argv[1])
     #np.savetxt(collisionSpecies + "_uptick.dat", get_uptick(bins))
     plot_curves(bins)
