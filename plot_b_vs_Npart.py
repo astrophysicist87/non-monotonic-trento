@@ -26,8 +26,8 @@ def load_file(file):
     # split the data array accordingly
     bins = np.split(data, binlimits)
     
-    print(np.array(bins).shape)
-    exit(0)
+    #print(np.array(bins).shape)
+    #exit(0)
 
     return bins
 
@@ -53,8 +53,9 @@ def plot_histogram():
 def plot_curves(bins):
     fig, ax = plt.subplots(nrows=1, ncols=1)
 
-    x = np.array([ np.mean(bin) for bin in bins ])
-    ax.hist2d(data[:,0], data[:,1], bins=[nbx,nby])
+    x = np.array([ np.mean(bin[:,0]) for bin in bins ])
+    y = np.array([ np.mean(bin[:,1]) for bin in bins ])
+    ax.plot(x, y, '-ro')
 
     fig.tight_layout()
 
