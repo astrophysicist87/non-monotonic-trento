@@ -23,7 +23,7 @@ def load_file(file):
     bins = np.split(data, binlimits)
     
     print(np.array(bins).shape)
-    exit 0
+    exit(0)
 
     return bins
 
